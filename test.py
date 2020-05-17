@@ -90,7 +90,7 @@ def test_probe_class():
     expected = [
         {
             'path': __file__,
-            'func_name': '__init__',
+            'func_name': 'Santa.__init__',
             'type_comments': ['(float) -> None'],
             'samples': 1,
         },

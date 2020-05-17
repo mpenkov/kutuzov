@@ -99,7 +99,7 @@ def _get_parser(flavor):
         raise ValueError('unexpected flavor: %r' % flavor)
 
 
-def probe_function(f: Callable, flavor: str = 'sphinx') -> Optional[Dict]:
+def probe_function(f: Callable, flavor: str = 'sphinx', klass=None) -> Optional[Dict]:
     if not (hasattr(f, '__doc__') and f.__doc__):
         return None
 
@@ -110,16 +110,31 @@ def probe_function(f: Callable, flavor: str = 'sphinx') -> Optional[Dict]:
     buf.write('(')
 
     for param_name in f.__code__.co_varnames[:f.__code__.co_argcount]:
+        if param_name in ('self', 'cls'):
+            #
+            # pyannotate does not include these in the stats dump,
+            # so we ignore them, too.
+            #
+            continue
+
         try:
             buf.write('%s ' % param_types[param_name])
         except KeyError:
             buf.write('Any ')
     buf.write(') -> %s' % param_types.get(None))
 
+    #
+    # pyannotate expects initializers to be prefixed with the class name.
+    #
+    if f.__name__.startswith('__') and klass:
+        func_name = '%s.__init__' % klass.__name__
+    else:
+        func_name = f.__name__
+
     return {
         'path': f.__code__.co_filename,
         'line': f.__code__.co_firstlineno,
-        'func_name': f.__name__,
+        'func_name': func_name,
         'samples': 1,
         'type_comments': [buf.getvalue().replace(' )', ')')],
     }
@@ -130,9 +145,6 @@ def probe_class(klass, flavor: str = 'sphinx') -> List[Dict]:
 
     def g():
         for attr in dir(klass):
-            if attr.startswith('_') and attr != '__init__':
-                continue
-
             try:
                 thing = getattr(klass, attr)
             except Exception as e:
@@ -150,8 +162,11 @@ def probe_class(klass, flavor: str = 'sphinx') -> List[Dict]:
             # are likely from superclasses.
             #
             if is_callable and thing.__module__ == klass.__module__:
-                info = probe_function(thing, flavor=flavor)
+                info = probe_function(thing, flavor=flavor, klass=klass)
             else:
+                #
+                # TODO: handle properties here
+                #
                 info = None
 
             if info:
@@ -169,7 +184,12 @@ def probe_module(module, flavor: str = 'sphinx') -> List[Dict]:
             thing = getattr(module, attr)
 
             if inspect.isfunction(thing):
-                if module.__file__ == thing.__code__.co_filename:
+                try:
+                    skip_this = module.__file__ != thing.__code__.co_filename
+                except Exception:
+                    skip_this = True
+
+                if not skip_this:
                     info = probe_function(thing, flavor=flavor)
                     if info:
                         yield info
@@ -177,5 +197,9 @@ def probe_module(module, flavor: str = 'sphinx') -> List[Dict]:
                 for info in probe_class(thing, flavor=flavor):
                     if info:
                         yield info
+            elif inspect.ismodule(thing) and thing.__name__.startswith(module.__name__):
+                for info in probe_module(thing, flavor=flavor):
+                    if info:
+                        yield info
 
-    return sorted(g(), key=lambda x: x['line'])
+    return sorted(g(), key=lambda x: '%(path)s:%(line)d' % x)
