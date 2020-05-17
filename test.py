@@ -25,7 +25,7 @@ def f1():
 
 def test_parse_sphinx_docstring(f1):
     docstr, expected = f1
-    actual = kutuzov.parse_sphinx_docstring(docstr)
+    actual = kutuzov._parse_sphinx_docstring(docstr)
     assert expected == actual
 
 
