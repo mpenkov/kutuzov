@@ -1,6 +1,8 @@
 import importlib.util
 import inspect
 import io
+import os.path as P
+import pkgutil
 import re
 import sys
 
@@ -66,7 +68,7 @@ def _parse_gensim_docstring(docstr: str) -> List[Tuple[str, str]]:
             lines.pop(0)
 
         if ', optional' in type_:
-            type_ = 'Optional[%s]' % type_.replace(', optional', '').strip()
+            type_ = type_.replace(', optional', '').strip()
 
         retval.append((name.strip(), type_.strip()))
 
@@ -197,9 +199,16 @@ def probe_module(module, flavor: str = 'sphinx') -> List[Dict]:
                 for info in probe_class(thing, flavor=flavor):
                     if info:
                         yield info
-            elif inspect.ismodule(thing) and thing.__name__.startswith(module.__name__):
-                for info in probe_module(thing, flavor=flavor):
-                    if info:
-                        yield info
+
+        if not hasattr(module, '__path__'):
+            return
+
+        package = module
+        for (importer, modname, ispkg) in pkgutil.iter_modules(path=package.__path__):
+            # submodule = importer.find_module(modname).load_module(modname)
+            submodule = importlib.import_module('.' + modname, package=package.__name__)
+            for info in probe_module(submodule, flavor=flavor):
+                if info:
+                    yield info
 
     return sorted(g(), key=lambda x: '%(path)s:%(line)d' % x)
