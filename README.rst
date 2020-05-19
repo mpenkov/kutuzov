@@ -33,7 +33,7 @@ It significantly depends on the quality and accuracy of your docstrings.
 Example
 ^^^^^^^
 
-We will be annotating the example.py file.
+We will be annotating the ``example.py`` file.
 It looks like this:
 
 .. code-block:: python
@@ -118,7 +118,7 @@ You will need ``kutuzov`` and ``pyannotate`` (``pip install kutuzov pyannotate``
     example.py
     NOTE: this was a dry run; use -w to write files
 
-You may have noticed that [example.py](example.py) already contains a PyAnnotate driver in the mainline.
+You may have noticed that ``example.py`` already contains a PyAnnotate driver in the mainline.
 
 .. code-block::
 
