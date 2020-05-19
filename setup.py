@@ -28,7 +28,7 @@ __version__ = get_version()
 setuptools.setup(
     name='kutuzov',
     version=__version__,
-    description='Derives Python type annotations from Sphinx comments',
+    description='Derives type annotations from Sphinx comments in Python source',
     long_description=read('README.rst'),
     packages=setuptools.find_packages(),
     author='Michael Penkov',
@@ -48,7 +48,7 @@ setuptools.setup(
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
-        'Topic :: System :: Distributed Computing',
-        'Topic :: Database :: Front-Ends',
+        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
     ],
 )

@@ -96,19 +96,19 @@ def test_probe_class():
         },
         {
             'path': __file__,
-            'func_name': 'hohoho',
+            'func_name': 'Santa.hohoho',
             'type_comments': ['(int) -> collections.defaultdict'],
             'samples': 1,
         },
         {
             'path': __file__,
-            'func_name': 'statik',
+            'func_name': 'Santa.statik',
             'type_comments': ['(float) -> None'],
             'samples': 1,
         },
         {
             'path': __file__,
-            'func_name': 'klass',
+            'func_name': 'Santa.klass',
             'type_comments': ['(float) -> None'],
             'samples': 1,
         },

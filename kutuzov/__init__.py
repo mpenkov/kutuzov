@@ -126,10 +126,10 @@ def probe_function(f: Callable, flavor: str = 'sphinx', klass=None) -> Optional[
     buf.write(') -> %s' % param_types.get(None))
 
     #
-    # pyannotate expects initializers to be prefixed with the class name.
+    # pyannotate expects members to be prefixed with the class name.
     #
-    if f.__name__.startswith('__') and klass:
-        func_name = '%s.__init__' % klass.__name__
+    if klass:
+        func_name = '%s.%s' % (klass.__name__, f.__name__)
     else:
         func_name = f.__name__
 
@@ -178,7 +178,12 @@ def probe_class(klass, flavor: str = 'sphinx') -> List[Dict]:
 
 
 def probe_module(module, flavor: str = 'sphinx') -> List[Dict]:
-    if isinstance(module, str):
+    if isinstance(module, str) and P.isfile(module):
+        module_name = P.splitext(P.basename(module)[0])[0]
+        spec = importlib.util.spec_from_file_location(module_name, module)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+    elif isinstance(module, str):
         module = importlib.import_module(module)
 
     def g():
@@ -211,4 +216,4 @@ def probe_module(module, flavor: str = 'sphinx') -> List[Dict]:
                 if info:
                     yield info
 
-    return sorted(g(), key=lambda x: '%(path)s:%(line)d' % x)
+    return sorted(g(), key=lambda x: '%(path)s:%(line)08d' % x)
