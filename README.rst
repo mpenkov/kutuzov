@@ -1,7 +1,7 @@
 What?
 -----
 
-Extracts type annotations from Python source documented with [Sphinx-compatible docstrings](https://pypi.org/project/sphinx-autodoc-typehints/).
+Extracts type annotations from Python source documented with `Sphinx-compatible docstrings <https://pypi.org/project/sphinx-autodoc-typehints/>`__.
 
 Why?
 ----
