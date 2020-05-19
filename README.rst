@@ -1,7 +1,7 @@
 What?
 -----
 
-Extracts type annotations from Python source documented with Sphinx-compatible docstrings.
+Extracts type annotations from Python source documented with [Sphinx-compatible docstrings](https://pypi.org/project/sphinx-autodoc-typehints/).
 
 Why?
 ----
@@ -34,7 +34,40 @@ Example
 ^^^^^^^
 
 We will be annotating the example.py file.
-You will need pyannotate (``pip install pyannotate``) to proceed.
+It looks like this:
+
+.. code-block:: python
+    class Dog:
+        def __init__(self, name):
+            """
+            :param str name: The name of this dog.
+            """
+            self._name = name
+
+        @property
+        def name(self):
+            """
+            :returns: The name of this dog.
+            :rtype: str
+            """
+            return self._name
+
+        def bark(self, language='en'):
+            """
+            Make some noise!
+
+            :param str language: The language to bark in.
+            :returns: The bark
+            :rtype: str
+            """
+            if language == 'ru':
+                return 'гав!'
+            elif language == 'en':
+                return 'woof!'
+            else:
+                raise ValueError('I do not yet know how to bark in %r!' % language)
+
+You will need ``kutuzov`` and ``pyannotate`` (``pip install kutuzov pyannotate``) to proceed.
 
 .. code-block::
 
