@@ -37,6 +37,7 @@ We will be annotating the example.py file.
 It looks like this:
 
 .. code-block:: python
+
     class Dog:
         def __init__(self, name):
             """
