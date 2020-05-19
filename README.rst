@@ -6,7 +6,7 @@ Extracts type annotations from Python source documented with Sphinx-compatible d
 Why?
 ----
 
-Existing tools like `PyAnnotate <https://github.com/dropbox/pyannotate>` require you to write a driver to exercise your application, while a special hook collects type information and converts it to annotations.
+Existing tools like `PyAnnotate <https://github.com/dropbox/pyannotate>`_ require you to write a driver to exercise your application, while a special hook collects type information and converts it to annotations.
 This works really well, but requires significant effort in writing a comprehensive driver that covers your entire application.
 
 If your application already has type information in its docstrings, it may be simpler to convert that information to annotations directly.
@@ -36,7 +36,8 @@ Example
 We will be annotating the example.py file.
 You will need pyannotate (``pip install pyannotate``) to proceed.
 
-::
+.. code-block::
+
     $ python -m kutuzov example.py > type_info.json
     $ cat type_info.json
     [
@@ -85,7 +86,8 @@ You will need pyannotate (``pip install pyannotate``) to proceed.
 
 You may have noticed that [example.py](example.py) already contains a PyAnnotate driver in the mainline.
 
-::
+.. code-block::
+
     $ cat type_info.json 
     [
         {
@@ -123,7 +125,7 @@ The greatest difference is that Kutuzov missed the ``name`` property - it doesn'
 What's in a name?
 -----------------
 
-`Mikhail Kutuzov <https://en.wikipedia.org/wiki/Mikhail_Kutuzov>` was a contemporary of `Napoleon Bonaparte <https://en.wikipedia.org/wiki/Napoleon>`.
+`Mikhail Kutuzov <https://en.wikipedia.org/wiki/Mikhail_Kutuzov>`_ was a contemporary of `Napoleon Bonaparte <https://en.wikipedia.org/wiki/Napoleon>`_.
 A `particular painting <https://en.wikipedia.org/wiki/Bonaparte_Before_the_Sphinx>`__ depicts Napoleon before the Sphinx.
 And `Sphinx <https://www.sphinx-doc.org/en/stable/>`_, of course, is the project that we all love for our Python documentation needs.
 
