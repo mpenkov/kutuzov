@@ -102,6 +102,13 @@ def _get_parser(flavor):
 
 
 def probe_function(f: Callable, flavor: str = 'sphinx', klass=None) -> Optional[Dict]:
+    #
+    # Unwrap decorators.  We need the original function to get the real
+    # co_varnames and co_argcount.
+    #
+    while hasattr(f, '__wrapped__'):
+        f = f.__wrapped__
+
     if not (hasattr(f, '__doc__') and f.__doc__):
         return None
 

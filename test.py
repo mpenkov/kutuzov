@@ -1,3 +1,5 @@
+import functools
+
 import pytest
 
 import kutuzov
@@ -122,3 +124,35 @@ def test_probe_class():
         return d['func_name']
 
     assert sorted(expected, key=f) == sorted(actual, key=f)
+
+
+def my_decorator(f):
+    @functools.wraps(f)
+    def inner(*args, **kwargs):
+        print('inner')
+        return f(*args, **kwargs)
+    return inner
+
+
+@my_decorator
+def decorated_function(foo, bar, baz='boz'):
+    """
+    :param int foo:
+    :param float bar:
+    :param str baz:
+    :rtype: bool
+    """
+
+
+def test_probe_decorated_function():
+    expected = {
+        'path': __file__,
+        'func_name': 'decorated_function',
+        'type_comments': ['(int float str) -> bool'],
+        'samples': 1,
+    }
+
+    actual = kutuzov.probe_function(decorated_function)
+    actual.pop('line')
+
+    assert expected == actual
