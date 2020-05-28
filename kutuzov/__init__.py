@@ -102,10 +102,6 @@ def _get_parser(flavor):
 
 
 def probe_function(f: Callable, flavor: str = 'sphinx', klass=None) -> Optional[Dict]:
-    #
-    # Unwrap decorators.  We need the original function to get the real
-    # co_varnames and co_argcount.
-    #
     while hasattr(f, '__wrapped__'):
         f = f.__wrapped__
 
@@ -186,8 +182,9 @@ def probe_class(klass, flavor: str = 'sphinx') -> List[Dict]:
 
 def probe_module(module, flavor: str = 'sphinx') -> List[Dict]:
     if isinstance(module, str) and P.isfile(module):
-        module_name = P.splitext(P.basename(module)[0])[0]
-        spec = importlib.util.spec_from_file_location(module_name, module)
+        module_path = P.abspath(module)
+        module_name = P.splitext(P.basename(module_path))[0]
+        spec = importlib.util.spec_from_file_location(module_name, module_path)
         module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(module)
     elif isinstance(module, str):
@@ -196,6 +193,13 @@ def probe_module(module, flavor: str = 'sphinx') -> List[Dict]:
     def g():
         for attr in dir(module):
             thing = getattr(module, attr)
+
+            #
+            # Unwrap decorators.  We need the original function to get the real
+            # co_varnames and co_argcount.
+            #
+            while hasattr(thing, '__wrapped__'):
+                thing = thing.__wrapped__
 
             if inspect.isfunction(thing):
                 try:
