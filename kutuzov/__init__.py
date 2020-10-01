@@ -67,10 +67,13 @@ def _parse_gensim_docstring(docstr: str) -> List[Tuple[str, str]]:
         while lines and lines[0].startswith('    '):
             lines.pop(0)
 
+        type_ = type_.replace('boolean', 'bool')
+
         if ', optional' in type_:
             type_ = type_.replace(', optional', '').strip()
 
-        retval.append((name.strip(), type_.strip()))
+        type_ = type_.strip().split(' ')[0].strip()
+        retval.append((name.strip(), type_))
 
     return retval
 

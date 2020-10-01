@@ -25,9 +25,61 @@ def f1():
     return docstr, expected
 
 
+@pytest.fixture
+def f2():
+    docstr = """Open the URI object, returning a file-like object.
+
+    Parameters
+    ----------
+    uri: str or object
+        The object to open.
+    mode: str, optional
+        Mimicks built-in open parameter of the same name.
+    buffering: int, optional
+        Mimicks built-in open parameter of the same name.
+    encoding: str, optional
+        Mimicks built-in open parameter of the same name.
+    errors: str, optional
+        Mimicks built-in open parameter of the same name.
+    newline: str, optional
+        Mimicks built-in open parameter of the same name.
+    closefd: boolean, optional
+        Mimicks built-in open parameter of the same name.  Ignored.
+    opener: object, optional
+        Mimicks built-in open parameter of the same name.  Ignored.
+    ignore_ext: boolean, optional
+        Disable transparent compression/decompression based on the file extension.
+    transport_params: dict, optional
+        Additional parameters for the transport layer (see notes below).
+
+    Returns
+    -------
+    A file-like object.
+"""
+    expected = [
+        ('uri', 'str'),
+        ('mode', 'str'),
+        ('buffering', 'int'),
+        ('encoding', 'str'),
+        ('errors', 'str'),
+        ('newline', 'str'),
+        ('closefd', 'bool'),
+        ('opener', 'object'),
+        ('ignore_ext', 'bool'),
+        ('transport_params', 'dict'),
+    ]
+    return docstr, expected
+
+
 def test_parse_sphinx_docstring(f1):
     docstr, expected = f1
     actual = kutuzov._parse_sphinx_docstring(docstr)
+    assert expected == actual
+
+
+def test_parse_gensim_docstring(f2):
+    docstr, expected = f2
+    actual = kutuzov._parse_gensim_docstring(docstr)
     assert expected == actual
 
 
